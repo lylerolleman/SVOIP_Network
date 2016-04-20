@@ -46,9 +46,10 @@ message returns [SVOIPMessage message]
   
 code returns [SVOIPCommand command]
   : CON ID {$command = new Connect($ID.text, connection);}
-  | DC
-  | DC ID
-  | MSG ID+
+  | DC {$command = new Disconnect(connection.getID());}
+  | DC ID {$command = new Disconnect($ID.text);}
+  | MSG {$command = new MessageCommand(connection.getID());}
+  | MSG ID {$command = new MessageCommand($ID.text);}
   | PING
   ;
 

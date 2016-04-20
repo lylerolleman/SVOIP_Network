@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 import network.NetworkManager;
 import network.SVOIPConnection;
@@ -16,6 +17,11 @@ public class SVOIPRig {
 		if (args.length > 0 && args[0].equals("test")) {
 			NetworkManager.establishConnection("test", "127.0.0.1", 25123);
 			NetworkManager.sendMessage("test", "CONNECT test;\r\n");
+			Scanner sc = new Scanner(System.in);
+			while (true) {
+				String mes = sc.nextLine();
+				NetworkManager.sendMessage("test", "MSG test \"" + mes + "\";\r\n");
+			}
 		}
 		
 	}

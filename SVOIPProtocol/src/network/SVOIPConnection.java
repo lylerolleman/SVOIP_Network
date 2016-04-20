@@ -46,7 +46,7 @@ public class SVOIPConnection {
 		String line;
 		try {
 			while ((line = reader.readLine()) != null) {
-				System.out.println(line);
+				//System.out.println(line);
 				//TODO change reader to get more from the stream at once
 				ANTLRStringStream input = new ANTLRStringStream(line);
 				ProtocolLexer lexer = new ProtocolLexer(input);
@@ -77,6 +77,12 @@ public class SVOIPConnection {
 	}
 	
 	public void setID(String id) {this.id = id;}
+	public String getID() {
+		if (id == null) {
+			System.err.println("null ID error");
+		}
+		return id;
+	}
 	
 	public void close() {
 		try {
