@@ -15,6 +15,7 @@ import org.antlr.runtime.RecognitionException;
 
 import exec.ExecutionManager;
 import exec.messages.SVOIPMessage;
+import exec.threads.ReaderThread;
 import protocolparser.ProtocolLexer;
 import protocolparser.ProtocolParser;
 
@@ -31,13 +32,13 @@ public class SVOIPConnection {
 			this.socket = socket;
 	    	writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream( )));
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream( )));
-			readAndParse();
+			new ReaderThread(this).start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void readAndParse() throws IOException {
+	public void readAndParse() throws IOException {
 		String line;
 		while ((line = reader.readLine()) != null) {
 			System.out.println(line);
