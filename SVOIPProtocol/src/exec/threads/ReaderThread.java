@@ -15,8 +15,8 @@ public class ReaderThread extends Thread {
 		try {
 			connection.readAndParse();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("closing reader...");
+			return;
 		}
 	}
 }

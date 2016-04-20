@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 
@@ -20,9 +21,11 @@ import protocolparser.ProtocolLexer;
 import protocolparser.ProtocolParser;
 
 public class SVOIPConnection {
+	private String id;
 	private Socket socket;
 	private BufferedReader reader;
 	private BufferedWriter writer;
+	private ReaderThread rthread;
 	
 	public SVOIPConnection(String address, int port) throws UnknownHostException, IOException {
 	    this(new Socket(address, port));
@@ -32,7 +35,8 @@ public class SVOIPConnection {
 			this.socket = socket;
 	    	writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream( )));
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream( )));
-			new ReaderThread(this).start();
+			rthread = new ReaderThread(this);
+			rthread.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -40,17 +44,25 @@ public class SVOIPConnection {
 	
 	public void readAndParse() throws IOException {
 		String line;
-		while ((line = reader.readLine()) != null) {
-			System.out.println(line);
-			//TODO change reader to get more from the stream at once
-			ANTLRStringStream input = new ANTLRStringStream(line);
-			ProtocolLexer lexer = new ProtocolLexer(input);
-			CommonTokenStream tokenstream = new CommonTokenStream(lexer);
-			try {
-				LinkedList<SVOIPMessage> messages = new ProtocolParser(tokenstream, this).messages();
-				ExecutionManager.enqueueMessages(messages);
-			} catch (RecognitionException e) {
-				e.printStackTrace();
+		try {
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+				//TODO change reader to get more from the stream at once
+				ANTLRStringStream input = new ANTLRStringStream(line);
+				ProtocolLexer lexer = new ProtocolLexer(input);
+				CommonTokenStream tokenstream = new CommonTokenStream(lexer);
+				try {
+					LinkedList<SVOIPMessage> messages = new ProtocolParser(tokenstream, this).messages();
+					ExecutionManager.enqueueMessages(messages);
+				} catch (RecognitionException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (SocketException se) {
+			System.err.println(se.getMessage());
+			if (id != null) {
+				NetworkManager.closeConnection(id);
+				throw se;
 			}
 		}
 	}
@@ -64,8 +76,11 @@ public class SVOIPConnection {
 		}
 	}
 	
+	public void setID(String id) {this.id = id;}
+	
 	public void close() {
 		try {
+			
 			writer.close();
 			reader.close();
 			socket.close();

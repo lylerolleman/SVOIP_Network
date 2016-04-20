@@ -12,14 +12,16 @@ public class ConsumerThread extends Thread {
 	}
 	
 	public void run() {
-		synchronized (messages) {
-			try {
-				messages.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			while (messages.size() > 0) {
-				messages.pop().execute();
+		while (true) {
+			synchronized (messages) {
+				try {
+					messages.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				while (messages.size() > 0) {
+					messages.pop().execute();
+				}
 			}
 		}
 	}
