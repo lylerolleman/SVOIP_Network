@@ -1,5 +1,6 @@
 package exec.commands;
 
+import display.DisplayManager;
 import network.NetworkManager;
 import network.SVOIPConnection;
 import exec.messages.SVOIPMessage;
@@ -14,6 +15,7 @@ public class Disconnect implements SVOIPCommand {
 	@Override
 	public void execute(SVOIPMessage message) {
 		NetworkManager.closeConnection(id);
+		DisplayManager.display(id + " disconnected");
 	}
 
 	

@@ -27,7 +27,6 @@ public class NetworkManager {
 	public static void establishConnection(String id, SVOIPConnection con) {
 		con.setID(id);
 		connections.put(id, con);
-		System.out.println("connection registered");
 	}
 	
 	public static void closeConnection(String id) {

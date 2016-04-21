@@ -1,5 +1,6 @@
 package exec.commands;
 
+import display.DisplayManager;
 import exec.messages.SVOIPMessage;
 
 public class MessageCommand implements SVOIPCommand {
@@ -10,7 +11,8 @@ public class MessageCommand implements SVOIPCommand {
 	}
 	@Override
 	public void execute(SVOIPMessage message) {
-		System.out.println(nick + ": " + message.getArgs()[0]);
+		//System.out.println(nick + ": " + message.getArgs()[0]);
+		DisplayManager.display(nick + ": " + message.getArgs()[0]);
 	}
 
 }

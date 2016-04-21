@@ -1,5 +1,6 @@
 package exec.commands;
 
+import display.DisplayManager;
 import network.NetworkManager;
 import network.SVOIPConnection;
 import exec.messages.SVOIPMessage;
@@ -16,7 +17,8 @@ public class Connect implements SVOIPCommand {
 	@Override
 	public void execute(SVOIPMessage message) {
 		NetworkManager.establishConnection(id, con);
-		System.out.println("Connection Established");
+		//System.out.println("Connection Established");
+		DisplayManager.display("Connected to " + id);
 	}
 
 }
