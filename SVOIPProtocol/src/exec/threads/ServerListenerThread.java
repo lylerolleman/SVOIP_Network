@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 
+import display.DisplayManager;
 import network.NetworkManager;
 import network.SVOIPConnection;
 
@@ -22,11 +23,13 @@ public class ServerListenerThread extends Thread {
 					listenport++;
 					continue;
 				}
+				DisplayManager.display("Listening on port: " + listenport);
 				break;
 			}
 			while (true) {
-				new SVOIPConnection(ss.accept());
+				SVOIPConnection con = new SVOIPConnection(ss.accept());
 				System.out.println("New client connected");
+				con.sendMessage("REPLY " + NetworkManager.getID() + ";\r\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -18,4 +18,10 @@ public class DisplayManager {
 			listener.display(message);
 		}
 	}
+	
+	public static void displaySecondary(String message) {
+		for (DisplayListener listener : listeners) {
+			listener.displaySecondary(message);
+		}
+	}
 }

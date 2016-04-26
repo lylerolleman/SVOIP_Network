@@ -9,6 +9,10 @@ import exec.threads.ServerListenerThread;
 public class NetworkManager {
 	private static HashMap<String, SVOIPConnection> connections;
 	private static int listenport = 25123;
+	private static String uid = "";
+	
+	public static void setID(String id) {uid = id;}
+	public static String getID() {return uid;}
 	
 	public static void initNetwork() {
 		connections = new HashMap<String, SVOIPConnection>();
@@ -18,8 +22,9 @@ public class NetworkManager {
 	
 	public static void establishConnection(String id, String address, int port) {
 		try {
-			establishConnection(id, new SVOIPConnection(address, port));
+			new SVOIPConnection(address, port).sendMessage("CONNECT " + id + ";\r\n");
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -35,7 +40,13 @@ public class NetworkManager {
 		con.close();
 	}
 	
-	public static void sendMessage(String id, String message) {
+	public static void sendRawMessage(String id, String message) {
+		System.out.println("message to " + id);
 		connections.get(id).sendMessage(message);
 	}
+	
+	public static void sendMessage(String cid, String uid, String message) {
+		sendRawMessage(cid, "MSG " + uid + " \"" + message + "\";\r\n");
+	}
+	
 }

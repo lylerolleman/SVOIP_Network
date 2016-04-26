@@ -1,15 +1,15 @@
 package exec.commands;
 
-import display.DisplayManager;
 import network.NetworkManager;
 import network.SVOIPConnection;
+import display.DisplayManager;
 import exec.messages.SVOIPMessage;
 
-public class Connect implements SVOIPCommand {
+public class Reply implements SVOIPCommand {
 	private SVOIPConnection con;
 	private String id;
 	
-	public Connect(String id, SVOIPConnection con) {
+	public Reply(String id, SVOIPConnection con) {
 		this.id = id;
 		this.con = con;
 	}
@@ -17,8 +17,7 @@ public class Connect implements SVOIPCommand {
 	@Override
 	public void execute(SVOIPMessage message) {
 		NetworkManager.establishConnection(id, con);
-		con.sendMessage("REPLY " + NetworkManager.getID() + ";\r\n");
-		DisplayManager.display("Connected to " + id);
+		DisplayManager.display("Reply: Connected to " + id);
 		DisplayManager.displaySecondary(id);
 	}
 
