@@ -15,7 +15,8 @@ public class Disconnect implements SVOIPCommand {
 	@Override
 	public void execute(SVOIPMessage message) {
 		NetworkManager.closeConnection(id);
-		DisplayManager.display(id + " disconnected");
+		DisplayManager.removeUser(id);
+		//DisplayManager.display(id + " disconnected");
 	}
 
 	

@@ -14,7 +14,7 @@ public class ReaderThread extends Thread {
 	public void run() {
 		try {
 			connection.readAndParse();
-		} catch (IOException e) {
+		} catch (NullPointerException | IOException e) {
 			System.err.println("closing reader...");
 			return;
 		}

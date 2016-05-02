@@ -18,8 +18,8 @@ public class Connect implements SVOIPCommand {
 	public void execute(SVOIPMessage message) {
 		NetworkManager.establishConnection(id, con);
 		con.sendMessage("REPLY " + NetworkManager.getID() + ";\r\n");
-		DisplayManager.display("Connected to " + id);
-		DisplayManager.displaySecondary(id);
+		//DisplayManager.display("Connected to " + id);
+		DisplayManager.addUser(id);
 	}
 
 }

@@ -62,7 +62,6 @@ public class SVOIPConnection {
 			System.err.println(se.getMessage());
 			if (id != null) {
 				NetworkManager.closeConnection(id);
-				throw se;
 			}
 		}
 	}

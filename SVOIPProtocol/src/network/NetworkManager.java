@@ -2,6 +2,7 @@ package network;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Set;
 
 import exec.ExecutionManager;
 import exec.threads.ServerListenerThread;
@@ -10,6 +11,7 @@ public class NetworkManager {
 	private static HashMap<String, SVOIPConnection> connections;
 	private static int listenport = 25123;
 	private static String uid = "";
+	private static ServerListenerThread lt;
 	
 	public static void setID(String id) {uid = id;}
 	public static String getID() {return uid;}
@@ -17,7 +19,14 @@ public class NetworkManager {
 	public static void initNetwork() {
 		connections = new HashMap<String, SVOIPConnection>();
 		ExecutionManager.startConsumer();
-		new ServerListenerThread(listenport).start();
+		lt = new ServerListenerThread(listenport);
+		lt.start();
+	}
+	
+	public static void closeNetwork() {
+		lt.close();
+		closeAllConnections();
+		ExecutionManager.stopConsumer();
 	}
 	
 	public static void establishConnection(String id, String address, int port) {
@@ -40,6 +49,15 @@ public class NetworkManager {
 		con.close();
 	}
 	
+	public static void closeAllConnections() {
+		Set<String> set = connections.keySet();
+		for (String id : set) {
+			SVOIPConnection con = connections.get(id);
+			connections.remove(id);
+			con.close();
+		}
+	}
+	
 	public static void sendRawMessage(String id, String message) {
 		System.out.println("message to " + id);
 		connections.get(id).sendMessage(message);
@@ -47,6 +65,11 @@ public class NetworkManager {
 	
 	public static void sendMessage(String cid, String uid, String message) {
 		sendRawMessage(cid, "MSG " + uid + " \"" + message + "\";\r\n");
+	}
+	
+	public static void sendDisconnect(String id) {
+		sendRawMessage(id, "DISCONNECT;\r\n");
+		closeConnection(id);
 	}
 	
 }

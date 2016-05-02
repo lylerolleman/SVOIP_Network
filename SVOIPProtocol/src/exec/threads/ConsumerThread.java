@@ -6,6 +6,7 @@ import exec.messages.SVOIPMessage;
 
 public class ConsumerThread extends Thread {
 	private LinkedList<SVOIPMessage> messages;
+	private boolean closed = false;
 	
 	public ConsumerThread(LinkedList<SVOIPMessage> messages) {
 		this.messages = messages;
@@ -16,6 +17,9 @@ public class ConsumerThread extends Thread {
 			synchronized (messages) {
 				try {
 					messages.wait();
+					if (closed) {
+						return;
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -24,5 +28,9 @@ public class ConsumerThread extends Thread {
 				}
 			}
 		}
+	}
+	
+	public void close() {
+		closed = true;
 	}
 }

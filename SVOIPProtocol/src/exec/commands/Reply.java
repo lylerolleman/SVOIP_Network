@@ -17,8 +17,8 @@ public class Reply implements SVOIPCommand {
 	@Override
 	public void execute(SVOIPMessage message) {
 		NetworkManager.establishConnection(id, con);
-		DisplayManager.display("Reply: Connected to " + id);
-		DisplayManager.displaySecondary(id);
+		//DisplayManager.display("Reply: Connected to " + id);
+		DisplayManager.addUser(id);
 	}
 
 }

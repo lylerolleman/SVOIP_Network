@@ -19,9 +19,15 @@ public class DisplayManager {
 		}
 	}
 	
-	public static void displaySecondary(String message) {
+	public static void addUser(String user) {
 		for (DisplayListener listener : listeners) {
-			listener.displaySecondary(message);
+			listener.addUser(user);
+		}
+	}
+	
+	public static void removeUser(String user) {
+		for (DisplayListener listener : listeners) {
+			listener.removeUser(user);
 		}
 	}
 }

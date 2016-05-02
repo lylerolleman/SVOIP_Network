@@ -10,12 +10,12 @@ import network.SVOIPConnection;
 
 public class ServerListenerThread extends Thread {
 	private int listenport;
+	private ServerSocket ss;
 	public ServerListenerThread(int port) {
 		listenport = port;
 	}
 	public void run() {
 		try {
-			ServerSocket ss;
 			while (true) {
 				try {
 					ss = new ServerSocket(listenport);
@@ -32,7 +32,20 @@ public class ServerListenerThread extends Thread {
 				con.sendMessage("REPLY " + NetworkManager.getID() + ";\r\n");
 			}
 		} catch (IOException e) {
+			if (ss.isClosed()) {
+				System.err.println("server closing...");
+				return;
+			}
 			e.printStackTrace();
 		} 
+	}
+	
+	public void close() {
+		try {
+			ss.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
