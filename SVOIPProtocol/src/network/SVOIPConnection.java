@@ -23,6 +23,7 @@ import protocolparser.ProtocolParser;
 public class SVOIPConnection {
 	private String id;
 	private Socket socket;
+	private SVOIPAudioConnection audiocon;
 	private BufferedReader reader;
 	private BufferedWriter writer;
 	private ReaderThread rthread;
@@ -66,6 +67,14 @@ public class SVOIPConnection {
 		}
 	}
 	
+	public void setAudioConnection(SVOIPAudioConnection audiocon) {
+		this.audiocon = audiocon;
+	}
+	
+	public String getAddress() {
+		return socket.getInetAddress().getHostAddress();
+	}
+	
 	public void sendMessage(String message) {
 		try {
 			writer.write(message);
@@ -85,7 +94,9 @@ public class SVOIPConnection {
 	
 	public void close() {
 		try {
-			
+			if (audiocon != null) {
+				audiocon.close();
+			}
 			writer.close();
 			reader.close();
 			socket.close();

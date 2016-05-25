@@ -4,7 +4,7 @@ import exec.commands.SVOIPCommand;
 
 public class ExtendedMessage implements SVOIPMessage {
 	private SVOIPCommand command;
-	String[] args;
+	private String[] args;
 	
 	public ExtendedMessage(SVOIPCommand command, String arg) {
 		this(command, new String[1]);

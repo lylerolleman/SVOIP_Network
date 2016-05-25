@@ -9,23 +9,16 @@ import network.NetworkManager;
 import network.SVOIPConnection;
 
 public class ServerListenerThread extends Thread {
-	private int listenport;
-	private ServerSocket ss;
+	protected int listenport;
+	protected ServerSocket ss;
+
 	public ServerListenerThread(int port) {
 		listenport = port;
 	}
 	public void run() {
 		try {
-			while (true) {
-				try {
-					ss = new ServerSocket(listenport);
-				} catch (BindException be) {
-					listenport++;
-					continue;
-				}
-				DisplayManager.display("Listening on port: " + listenport);
-				break;
-			}
+			establishListener();
+			DisplayManager.display("Listening on port: " + listenport);
 			while (true) {
 				SVOIPConnection con = new SVOIPConnection(ss.accept());
 				System.out.println("New client connected");
@@ -39,7 +32,23 @@ public class ServerListenerThread extends Thread {
 			e.printStackTrace();
 		} 
 	}
+
+	protected void establishListener() throws IOException {
+		while (true) {
+			try {
+				ss = new ServerSocket(listenport);
+			} catch (BindException be) {
+				listenport++;
+				continue;
+			}
+			break;
+		}
+	}
 	
+	public int getPort() {
+		return listenport;
+	}
+
 	public void close() {
 		try {
 			ss.close();

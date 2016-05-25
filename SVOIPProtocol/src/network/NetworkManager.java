@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import exec.ExecutionManager;
+import exec.threads.CallListenerThread;
 import exec.threads.ServerListenerThread;
 
 public class NetworkManager {
@@ -12,6 +13,7 @@ public class NetworkManager {
 	private static int listenport = 25123;
 	private static String uid = "";
 	private static ServerListenerThread lt;
+	private static CallListenerThread clt;
 	
 	public static void setID(String id) {uid = id;}
 	public static String getID() {return uid;}
@@ -20,11 +22,14 @@ public class NetworkManager {
 		connections = new HashMap<String, SVOIPConnection>();
 		ExecutionManager.startConsumer();
 		lt = new ServerListenerThread(listenport);
+		clt = new CallListenerThread(listenport);
 		lt.start();
+		clt.start();
 	}
 	
 	public static void closeNetwork() {
 		lt.close();
+		clt.close();
 		closeAllConnections();
 		ExecutionManager.stopConsumer();
 	}
@@ -52,14 +57,20 @@ public class NetworkManager {
 	public static void closeAllConnections() {
 		Set<String> set = connections.keySet();
 		for (String id : set) {
-			SVOIPConnection con = connections.get(id);
-			connections.remove(id);
-			con.close();
+			closeConnection(id);
 		}
 	}
 	
+	public static void callUser(String id) {
+		sendRawMessage(id, "CALL " + clt.getPort() + ";\r\n");
+	}
+	
+	public static void setAudioConnection(String id, SVOIPAudioConnection acon) {
+		connections.get(id).setAudioConnection(acon);
+	}
+	
 	public static void sendRawMessage(String id, String message) {
-		System.out.println("message to " + id);
+		//System.out.println("message to " + id);
 		connections.get(id).sendMessage(message);
 	}
 	

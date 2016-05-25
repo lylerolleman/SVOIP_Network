@@ -51,6 +51,7 @@ code returns [SVOIPCommand command]
   | DC ID {$command = new Disconnect($ID.text);}
   | MSG {$command = new MessageCommand(connection.getID());}
   | MSG ID {$command = new MessageCommand($ID.text);}
+  | CALL NUMBER {$command = new Call(connection, Integer.parseInt($NUMBER.text));}
   | PING
   ;
 
@@ -58,6 +59,7 @@ CON: 'CONNECT';
 REPLY: 'REPLY';
 DC: 'DISCONNECT';
 MSG: 'MSG';
+CALL: 'CALL';
 PING: 'PING';
 
 COLON: ':';
